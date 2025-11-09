@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Twitter Analytics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+
+  <div class="max-w-6xl mx-auto px-4 md:px-0 py-6">
+
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl font-bold text-gray-900">Twitter Analytics</h1>
+      <p class="text-gray-600 mt-1">User ID: <span class="font-medium"><%- userId %></span></p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center">
+        <p class="text-xl font-bold text-blue-600"><%- totalTweets %></p>
+        <p class="text-gray-700 mt-1 text-center">Total Tweets</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center">
+        <p class="text-xl font-bold text-green-600"><%- totalLikes %></p>
+        <p class="text-gray-700 mt-1 text-center">Total Likes</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center">
+        <p class="text-xl font-bold text-purple-600"><%- totalRetweets %></p>
+        <p class="text-gray-700 mt-1 text-center">Total Retweets</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center">
+        <p class="text-xl font-bold text-red-600"><%- totalReplies %></p>
+        <p class="text-gray-700 mt-1 text-center">Total Replies</p>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Likes Over Tweets</h2>
+        <canvas id="likesChart" class="w-full h-64"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Retweets Over Tweets</h2>
+        <canvas id="retweetsChart" class="w-full h-64"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Replies Over Tweets</h2>
+        <canvas id="repliesChart" class="w-full h-64"></canvas>
+      </div>
+      <div class="bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-xl font-semibold mb-4">Impressions Over Tweets</h2>
+        <canvas id="impressionsChart" class="w-full h-64"></canvas>
+      </div>
+    </div>
+
+    <!-- Top 5 Most Liked Tweets -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+      <h2 class="text-xl font-semibold mb-3">Top 5 Most Liked Tweets</h2>
+      <canvas id="topLikedChart" class="w-full h-64"></canvas>
+    </div>
+
+    <!-- All Tweets Table -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-6 overflow-x-auto">
+      <h2 class="text-xl font-semibold mb-3">All Tweets</h2>
+      <table class="min-w-full table-auto border-collapse">
+        <thead>
+          <tr class="bg-gray-100">
+            <th class="px-4 py-2 border">Tweet ID</th>
+            <th class="px-4 py-2 border">Likes</th>
+            <th class="px-4 py-2 border">Retweets</th>
+            <th class="px-4 py-2 border">Replies</th>
+            <th class="px-4 py-2 border">Quotes</th>
+            <th class="px-4 py-2 border">Bookmarks</th>
+            <th class="px-4 py-2 border">Impressions</th>
+            <th class="px-4 py-2 border">Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% tweets.forEach(tweet => { %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 border"><%- tweet.tweetId %></td>
+              <td class="px-4 py-2 border"><%- tweet.like_count %></td>
+              <td class="px-4 py-2 border"><%- tweet.retweet_count %></td>
+              <td class="px-4 py-2 border"><%- tweet.reply_count %></td>
+              <td class="px-4 py-2 border"><%- tweet.quote_count %></td>
+              <td class="px-4 py-2 border"><%- tweet.bookmark_count %></td>
+              <td class="px-4 py-2 border"><%- tweet.impression_count %></td>
+              <td class="px-4 py-2 border"><%- tweet.createdAt.toLocaleString() %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // Use <%- %> to safely inject JSON into JS
+    const tweetLabels = <%- JSON.stringify(tweets.map(t => t.tweetId)) %>;
+    const likesData = <%- JSON.stringify(tweets.map(t => t.like_count)) %>;
+    const retweetsData = <%- JSON.stringify(tweets.map(t => t.retweet_count)) %>;
+    const repliesData = <%- JSON.stringify(tweets.map(t => t.reply_count)) %>;
+    const impressionsData = <%- JSON.stringify(tweets.map(t => t.impression_count)) %>;
+
+    // Top 5 liked tweets
+    const topTweetLabels = <%- JSON.stringify(topLikedTweets.map(t => t.tweetId)) %>;
+    const topLikesData = <%- JSON.stringify(topLikedTweets.map(t => t.like_count)) %>;
+
+    const chartOptions = { responsive: true, plugins: { legend: { display: true } } };
+
+    new Chart(document.getElementById('likesChart'), {
+      type: 'line',
+      data: { labels: tweetLabels, datasets: [{ label: 'Likes', data: likesData, borderColor: 'rgba(59,130,246,1)', backgroundColor: 'rgba(59,130,246,0.2)', tension: 0.3, fill: true }] },
+      options: chartOptions
+    });
+
+    new Chart(document.getElementById('retweetsChart'), {
+      type: 'line',
+      data: { labels: tweetLabels, datasets: [{ label: 'Retweets', data: retweetsData, borderColor: 'rgba(139,92,246,1)', backgroundColor: 'rgba(139,92,246,0.2)', tension: 0.3, fill: true }] },
+      options: chartOptions
+    });
+
+    new Chart(document.getElementById('repliesChart'), {
+      type: 'line',
+      data: { labels: tweetLabels, datasets: [{ label: 'Replies', data: repliesData, borderColor: 'rgba(220,38,38,1)', backgroundColor: 'rgba(220,38,38,0.2)', tension: 0.3, fill: true }] },
+      options: chartOptions
+    });
+
+    new Chart(document.getElementById('impressionsChart'), {
+      type: 'line',
+      data: { labels: tweetLabels, datasets: [{ label: 'Impressions', data: impressionsData, borderColor: 'rgba(16,185,129,1)', backgroundColor: 'rgba(16,185,129,0.2)', tension: 0.3, fill: true }] },
+      options: chartOptions
+    });
+
+    new Chart(document.getElementById('topLikedChart'), {
+      type: 'bar',
+      data: { labels: topTweetLabels, datasets: [{ label: 'Likes', data: topLikesData, backgroundColor: 'rgba(59,130,246,0.7)' }] },
+      options: { ...chartOptions, scales: { y: { beginAtZero: true } } }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "niggas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "googleapis": "^165.0.0",
+    "groq-sdk": "^0.34.0",
+    "luxon": "^3.7.2",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.10",
+    "serpapi": "^2.2.1",
+    "twitter-api-v2": "^1.27.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.0"
+  }
+}

@@ -1,0 +1,10 @@
+node_modules
+*env
+.env
+/src/generated/prisma
+config
+src/lib/*.json
+src/scripts/*.json
+
+src/lib/**/*.json
+src/scripts/**/*.json

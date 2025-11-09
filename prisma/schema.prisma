@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Generator
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model activity {
+  id          String   @id @default(cuid())
+  userId      String
+  isScheduled Boolean
+  date        DateTime?
+  rawDate     String?
+  content String? 
+  isDone Boolean? @default(false)
+  type String? @default("basic")
+  createdAt   DateTime @default(now())
+}
+
+model chat_history {
+  id        String   @id @default(cuid())
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model marketing {
+  id         String   @id @default(cuid())
+  userId     String
+  name       String
+  campaign   String?
+  status     String?  @default("pending") // misal pending, active, done
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  content    String?
+  platform String?
+  scheduled_at DateTime?
+  emails String[]
+  subject String?
+  attachment_id String?
+}
+
+
+model tweets {
+  id              String   @id @default(cuid())
+  userId          String   // your local user id
+  tweetId         String   // Twitter tweet ID
+  retweet_count   Int      @default(0)
+  reply_count     Int      @default(0)
+  like_count      Int      @default(0)
+  quote_count     Int      @default(0)
+  bookmark_count  Int      @default(0)
+  impression_count Int     @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
